@@ -1,0 +1,27 @@
+{
+  "name": "delilah-resto",
+  "version": "1.0.0",
+  "description": "Tercer proyecto de DWFS con Acamica usando NodeJs, Express y Sequelize",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "nodemon server/app.js"
+  },
+  "keywords": [
+    "NodeJs",
+    "Express",
+    "Sequelize"
+  ],
+  "author": "Fabricio Palavecino",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.1.0",
+    "nodemon": "^2.0.4",
+    "sequelize": "^5.21.11"
+  }
+}
