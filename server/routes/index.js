@@ -21,7 +21,7 @@ module.exports = () => {
   router.post("/api/v1/users/login", usersController.login);
   router.get("/api/v1/users/get-all",isAuth, isAdmin, usersController.getUsers);
   router.get("/api/v1/users/:id", isAuth, usersController.getUserById);
-  router.put("/api/v1/users/:id",isAuth ,checkDuplicateUsernameOrEmail,usersController.updateUser);
+  router.put("/api/v1/users/:id",isAuth ,usersController.updateUser);
   router.delete("/api/v1/users/:id", isAuth, usersController.deleteUser);
   // orders routes
   router.post("/api/v1/orders", ordersController.createOrder);

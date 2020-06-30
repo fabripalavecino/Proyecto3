@@ -28,9 +28,7 @@ const createUser = async (req, res) => {
       phone,
       is_Admin,
     });
-    res
-      .status(200)
-      .send({ status: "Ok", message: `User Created ${user.user_name}` });
+    res.status(200).send({ message: `User created ${user.user_name}` });
   } catch (error) {
     if (error.code == "ER_DUP_ENTRY" || error.errno == 1062) {
       res.status(400).send({
@@ -63,7 +61,7 @@ const login = async (req, res) => {
         res.status(403).send({ status: "INVALID_PASSWORD", message: "" });
       }
     } else {
-      res.status(401).send({ status: "USER_NOT_FOUND", message: "" });
+      res.status(404).send({ status: "USER_NOT_FOUND", message: "" });
     }
   } catch (error) {
     res.status(500).send({ status: "ERROR", message: error.message });
@@ -72,9 +70,15 @@ const login = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const { userId } = req.params.id;
-    await User.destroy({ where: { id: userId } });
-    res.status(200).send({ message: "Ok, user deleted" });
+    const user = await User.findByPk(req.params.id);
+    if(!user){
+      throw {
+        code: 404,
+        message: `Not found user ${req.params.id}`,
+      };
+    }
+    await User.destroy({ where: { id: req.params.id } });
+    res.status(200).send({ message: `Ok, user deleted ${req.params.id}`, data: `UserName: ${user.user_name}, FullName: ${user.full_name}`});
   } catch (error) {
     res.status(500).send({ status: "ERROR", data: error.message });
   }
@@ -104,23 +108,24 @@ const updateUser = async (req, res) => {
 };
 const getUsers = async (req, res) => {
   try {
-    const users = await User.findall();
+    const users = await User.findAll({ attributes: { exclude: ["password"] } });
     res.status(200).json(users);
   } catch (error) {
+    console.log(error);
     res.status(500).send({ status: "ERROR", data: error.message });
   }
 };
 const getUserById = async (req, res) => {
   try {
     const id = req.params.id;
-    const user = await User.findOne({ where: { id: id } });
-    if (user === null) {
+    const user = await User.findByPk(id);
+    if (!user) {
       throw {
         code: 404,
         message: `Not found user ${id}`,
       };
     } else {
-      res.send({ status: `ok,this is the User ${id}`, data: user });
+      res.send({ status: `ok, this is the User ${id}`, data: user });
     }
   } catch (error) {
     res.status(500).send({ status: "ERROR", data: error.message });

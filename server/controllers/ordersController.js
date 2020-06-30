@@ -27,7 +27,7 @@ const createOrder = async (req, res) => {
       };
       await product_order.create(po);
     });
-    res.status(200).json(order);
+    res.status(200).send({ status: `Order created`, data: order });
   } catch (error) {
     res.status(500).send({ status: "ERROR", message: error.message });
   }
@@ -36,17 +36,19 @@ const createOrder = async (req, res) => {
 const getsOrders = async (req, res) => {
   try {
     const allOrders = await Order.findAll({
-      include: [{
-        model: Product,
-        as: 'products',
-        required: false,
-        attributes: ['id', 'product_name'],
-        through: {
-          model: product_order,
-          as: 'productOrders',
-          attributes: ['quantity'],
-        }
-      }]
+      include: [
+        {
+          model: Product,
+          as: "products",
+          required: false,
+          attributes: ["id", "product_name"],
+          through: {
+            model: product_order,
+            as: "productOrders",
+            attributes: ["quantity"],
+          },
+        },
+      ],
     });
     res.status(200).json(allOrders);
   } catch (error) {
@@ -61,7 +63,13 @@ const updateOrder = async (req, res) => {
         id: req.params.id,
       },
     });
-    res.status(200).json(req.body);
+    if (order) {
+      const orderUpdated = await Order.findByPk(req.params.id);
+      res.status(200).send({
+        message: `order ${req.params.id} updated`,
+        data: orderUpdated,
+      });
+    }
   } catch (error) {
     res.status(500).send({ status: "ERROR", message: error.message });
   }
@@ -69,8 +77,18 @@ const updateOrder = async (req, res) => {
 
 const deleteOrder = async (req, res) => {
   try {
-    const order = await Order.destroy({ where: { id: req.params.id } });
-    res.status(200).send({ message: `Order n° ${req.params.id} deleted` });
+    const order = await Order.findByPk(req.params.id);
+
+    if (!order) {
+      throw {
+        code: 404,
+        message: `Not found Order ${req.params.id}`,
+      };
+    }
+    await Order.destroy({ where: { id: req.params.id } });
+    res
+      .status(200)
+      .send({ message: `Order n° ${req.params.id} deleted`, data: order });
   } catch (error) {
     res.status(500).send({ status: "ERROR", message: error.message });
   }

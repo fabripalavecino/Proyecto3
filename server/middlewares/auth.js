@@ -7,13 +7,14 @@ const isAuth = async (req, res, next) => {
     if (token) {
       const data = jwt.verify(token, process.env.JWT_SECRET);
       console.log("jwt data",data);
-      if (data.user !== req.body.user_name) {
+      
+      if (data.user !== req.body.user_name && data.role !== 1) {
         console.log(req.body.user_name);
         console.log("data.user",data.user);
         throw {
           code: 403,
           status: "ACCESS_DENIED",
-          message: "Missing permission",
+          message: "Missing permission or invalid role",
         };
       }
       req.sessionData = { user: data.user_name, role: data.role };
@@ -28,7 +29,7 @@ const isAuth = async (req, res, next) => {
   } catch (error) {
     res
       .status(error.code || 500)
-      .send({ status: error.status || "ERROR", message: error.message });
+      .send({ status: error.status || "ERROR", message: error.message}); 
   }
 };
 
