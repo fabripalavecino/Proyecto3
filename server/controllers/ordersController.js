@@ -23,7 +23,7 @@ const createOrder = async (req, res) => {
       const po = {
         orderId: order.id,
         productId: item.id,
-        quantity: item.qty,
+        quantity: item.quantity,
       };
       await product_order.create(po);
     });

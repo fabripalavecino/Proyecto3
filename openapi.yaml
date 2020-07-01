@@ -173,7 +173,7 @@ paths:
         description: "Order object that needs to be added to the store"
         required: true
         schema:
-          $ref: "#/definitions/Order"
+          $ref: "#/definitions/OrderProduct"
       responses:
         200:
           description: "successful operation"
@@ -270,10 +270,11 @@ paths:
       tags:
       - "user"
       summary: "Create user"
-      description: "This can only be done by the logged in user."
+      description: ""
       operationId: "createUser"
       produces:
       - "application/json"
+      
       parameters:
       - in: "body"
         name: "body"
@@ -318,8 +319,10 @@ paths:
               type: "string"
               format: "date-time"
               description: "date in UTC when token expires"
-        400:
-          description: "Invalid username/password supplied"
+        403:
+          description: "Invalid password supplied"
+        404:
+          description: "User not found"
   /user/{id}:
     get:
       tags:
@@ -436,7 +439,7 @@ definitions:
         type: "string"
       full_name:
         type: "string"
-      email:
+      mail:
         type: "string"
       password:
         type: "string"
@@ -462,4 +465,31 @@ definitions:
       image:
         type: "string"
         description: "url from example's image"
- 
+        
+  OrderProduct:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      status:
+        type: "string"
+        description: "Order Status"
+      payment_method:
+        type: "string"
+        example: "cash, credit, etc"
+      date_time:
+        type: "string"
+        format: "date-time"
+      user_id:
+        type: "integer"
+        format: "int64"
+      products:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            id:
+              type: "integer"
+            quantity:
+              type: "string"
