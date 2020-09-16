@@ -12,7 +12,7 @@ The proyect consist on a Rest API, which allows user to manage a list of users, 
 
 
 ```bash
-$ git clone https://github.com/fabripalavecino/Tercer-Proyecto-DWFS
+$ git clone https://github.com/fabripalavecino/Restaurant-Rest-API.git
 ```
 ### Installing dependencies:
 
